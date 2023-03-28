@@ -1,0 +1,11 @@
+/home/may/Programming/rust/docsearch/frontend/target/debug/deps/concurrent_queue-c6b5abbbadd4f753.rmeta: /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/lib.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/bounded.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/single.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/unbounded.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/sync.rs
+
+/home/may/Programming/rust/docsearch/frontend/target/debug/deps/libconcurrent_queue-c6b5abbbadd4f753.rlib: /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/lib.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/bounded.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/single.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/unbounded.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/sync.rs
+
+/home/may/Programming/rust/docsearch/frontend/target/debug/deps/concurrent_queue-c6b5abbbadd4f753.d: /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/lib.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/bounded.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/single.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/unbounded.rs /home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/sync.rs
+
+/home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/lib.rs:
+/home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/bounded.rs:
+/home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/single.rs:
+/home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/unbounded.rs:
+/home/may/.cargo/registry/src/github.com-1ecc6299db9ec823/concurrent-queue-2.1.0/src/sync.rs:

@@ -1,9 +1,16 @@
 use anyhow::{anyhow, Result};
 use colored::Colorize;
+use std::io::Write;
 use std::{
     collections::HashMap,
-    env, fs,
+    env, fs, io,
+    net::TcpListener,
     path::{Path, PathBuf},
+    thread::spawn,
+};
+use tungstenite::{
+    accept_hdr,
+    handshake::server::{Request, Response},
 };
 
 fn get_all_files(root: impl AsRef<Path>) -> Result<Vec<PathBuf>> {
@@ -70,24 +77,52 @@ fn score_documents(terms: &[&str], documents: &[PathBuf]) -> Result<HashMap<Path
     Ok(result)
 }
 
-fn main() -> Result<()> {
-    let folder = Path::new("geography_notes");
+fn get_results(terms: &[&str]) -> Result<Vec<(String, f64)>> {
+    let folder = Path::new("/home/may/notes/geography/");
     let files = get_all_files(folder)?;
-    let arg = env::args().nth(1).unwrap();
-    let query = arg.split(' ').collect::<Vec<_>>();
-    let scores = score_documents(&query, &files)?;
-    let mut scores = scores.iter().collect::<Vec<_>>();
-    scores.sort_by(|a, b| b.1.total_cmp(a.1));
-    for (i, score) in scores.iter().enumerate() {
-        println!(
-            "{}{} {} {}{}{}",
-            (i + 1).to_string().yellow(),
-            "|".to_string().yellow(),
-            score.0.display().to_string().blue(),
-            "(score: ".truecolor(100, 100, 100),
-            score.1.to_string().truecolor(100, 100, 100),
-            ")".truecolor(100, 100, 100),
-        );
+    let scores = score_documents(terms, &files)?;
+    let mut scores = scores
+        .iter()
+        .map(|x| (x.0.to_str().unwrap().to_string(), *x.1))
+        .collect::<Vec<_>>();
+    scores.sort_by(|a, b| b.1.total_cmp(&a.1));
+    Ok(scores)
+}
+
+fn info(description: String) -> Result<()> {
+    print!("{} {}", "INFO".yellow().bold(), description);
+    io::stdout().flush()?;
+    Ok(())
+}
+
+macro_rules! info {
+    ($($arg:tt)*) => {{
+        let text = format!($($arg)*);
+        info(text)
+    }};
+}
+
+fn main() -> Result<()> {
+    let server = TcpListener::bind("127.0.0.1:3012")?;
+    info!("Started watching on {}", "127.0.0.1:3012".blue())?;
+    for stream in server.incoming() {
+        spawn(move || {
+            let callback = |req: &Request, mut response: Response| {
+                info!("Received message");
+                Ok(response)
+            };
+            let mut websocket = accept_hdr(stream.unwrap(), callback).unwrap();
+
+            loop {
+                let msg = websocket.read_message().unwrap();
+                let results = get_results(&msg.to_string().split(' ').collect::<Vec<_>>()).unwrap();
+                websocket
+                    .write_message(tungstenite::Message::Text(
+                        serde_json::to_string(&results).unwrap(),
+                    ))
+                    .unwrap();
+            }
+        });
     }
     Ok(())
 }
