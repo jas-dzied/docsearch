@@ -78,19 +78,20 @@ fn score_documents(terms: &[&str], documents: &[PathBuf]) -> Result<HashMap<Path
 }
 
 fn get_results(terms: &[&str]) -> Result<Vec<(String, f64)>> {
-    let folder = Path::new("/home/may/notes/geography/");
+    let folder = Path::new("geography_notes");
     let files = get_all_files(folder)?;
     let scores = score_documents(terms, &files)?;
     let mut scores = scores
         .iter()
         .map(|x| (x.0.to_str().unwrap().to_string(), *x.1))
+        .filter(|x| !x.1.is_nan())
         .collect::<Vec<_>>();
     scores.sort_by(|a, b| b.1.total_cmp(&a.1));
     Ok(scores)
 }
 
 fn info(description: String) -> Result<()> {
-    print!("{} {}", "INFO".yellow().bold(), description);
+    println!("{} {}", "INFO".yellow().bold(), description);
     io::stdout().flush()?;
     Ok(())
 }
@@ -107,15 +108,25 @@ fn main() -> Result<()> {
     info!("Started watching on {}", "127.0.0.1:3012".blue())?;
     for stream in server.incoming() {
         spawn(move || {
-            let callback = |req: &Request, mut response: Response| {
-                info!("Received message");
+            let callback = |_req: &Request, response: Response| {
+                info!("Connected to client").unwrap();
                 Ok(response)
             };
             let mut websocket = accept_hdr(stream.unwrap(), callback).unwrap();
 
             loop {
                 let msg = websocket.read_message().unwrap();
-                let results = get_results(&msg.to_string().split(' ').collect::<Vec<_>>()).unwrap();
+                let text = msg.to_string();
+                info!("Received request {}", text.blue()).unwrap();
+                let results = get_results(&text.split(' ').collect::<Vec<_>>()).unwrap();
+                info!("Found results:").unwrap();
+                for result in &results {
+                    println!(
+                        "{} (score {})",
+                        result.0.green(),
+                        result.1.to_string().blue()
+                    );
+                }
                 websocket
                     .write_message(tungstenite::Message::Text(
                         serde_json::to_string(&results).unwrap(),
